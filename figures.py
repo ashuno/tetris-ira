@@ -1,11 +1,11 @@
-class figure_l:
+class FigureL:
     def __init__(self):
-        self.versions=(
-             ((1,1,0),(0,1,0),(0,1,0)),
-             ((0,0,1),(1,1,1),(0,0,0)),
-             ((0,1,0),(0,1,0),(0,1,1)),
-             ((0,1,0),(0,1,0),(0,1,1))
-            )
+        self.versions = (
+            ((1, 1, 0), (0, 1, 0), (0, 1, 0)),
+            ((0, 0, 1), (1, 1, 1), (0, 0, 0)),
+            ((0, 1, 0), (0, 1, 0), (0, 1, 1)),
+            ((0, 1, 0), (0, 1, 0), (0, 1, 1))
+        )
         self.current_version = 0
 
     def rotate(self):
@@ -17,13 +17,14 @@ class figure_l:
     def get(self):
         return self.versions[self.current_version]
 
-figure = figure_l()
-print(figure.get())
-figure.rotate()
-print(figure.get())
-figure.rotate()
-print(figure.get())
-figure.rotate()
-print(figure.get())
-figure.rotate()
-print(figure.get())
+
+# figure = FigureL()
+# print(figure.get())
+# figure.rotate()
+# print(figure.get())
+# figure.rotate()
+# print(figure.get())
+# figure.rotate()
+# print(figure.get())
+# figure.rotate()
+# print(figure.get())
