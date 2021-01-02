@@ -30,12 +30,11 @@ def draw_square(screen):
 
     font = pygame.font.Font(None, 40)
     text = font.render("Score", True, (155, 17, 30))
-    screen.blit(text, (375, 270))
-    pygame.draw.rect(screen, (0, 255, 0), (340, 250,
-                                           140, 110), 3)
+    screen.blit(text, (373, 270))
+    pygame.draw.rect(screen, (205, 205, 205), (340, 250, 140, 110), 3)
     font = pygame.font.Font(None, 40)
     text = font.render("0", True, 'red')
-    screen.blit(text, (405, 310))
+    screen.blit(text, (403, 310))
 
 
 class Figure:
