@@ -17,6 +17,8 @@ def draw_square(screen):
     hsv = color.hsva
     color.hsva = (hsv[0], hsv[1], hsv[2] + 40, hsv[3])
     pygame.draw.rect(screen, color, (4, 4, 492, 632), 0)
+    pygame.draw.rect(screen, (110, 110, 110), (15, 15, 310, 610), 0)
+    pygame.draw.rect(screen, (110, 110, 110), (336, 96, 145, 123), 0)
 
     pygame.draw.rect(screen, (0, 0, 0), (fieldx, fieldy, 300, 600), 0)
 
@@ -28,10 +30,12 @@ def draw_square(screen):
 
     font = pygame.font.Font(None, 40)
     text = font.render("Score", True, (155, 17, 30))
-    screen.blit(text, (370, 270))
+    screen.blit(text, (375, 270))
+    pygame.draw.rect(screen, (0, 255, 0), (340, 250,
+                                           140, 110), 3)
     font = pygame.font.Font(None, 40)
     text = font.render("0", True, 'red')
-    screen.blit(text, (400, 310))
+    screen.blit(text, (405, 310))
 
 
 class Figure:
