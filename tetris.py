@@ -36,8 +36,23 @@ class Figure:
         self.lasth, self.lastw = self.h, self.w
         self.lastfclass = self.fclass.get()
 
+    def check_element(self, content, elx, ely):
+        if elx <= 0 or elx >= 9 or ely <= 0 or ely >= 19:
+            return False
+        return True
 
-    # def get_fut(self):
+    def move_left(self, content):
+        per = self.fclass.get()
+        for i in range(len(per)):
+            for j in range(len(per)):
+                if per[i][j] == 1:
+                    if not self.check_element(content, self.h + j, self.w + 1):
+                        return
+                    # if self.h + j <= 0:
+                    #     return
+        self.h -= 1
+
+
 
 
 class Field:
@@ -116,7 +131,7 @@ class Field:
                         elif event.key == pygame.K_DOWN:
                             f.w += 1
                         elif event.key == pygame.K_LEFT:
-                            f.h -= 1
+                            f.move_left(self.content)
                         elif event.key == pygame.K_RIGHT:
                             f.h += 1
                 f.draw()
