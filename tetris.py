@@ -37,8 +37,10 @@ class Figure:
         self.lastfclass = self.fclass.get()
 
     def check_element(self, content, elx, ely):
-        if elx <= 0 or elx >= 9 or ely <= 0 or ely >= 19:
+        if elx < 0 or elx > 9 or ely < 0 or ely > 19:
+            print(elx, ely)
             return False
+
         return True
 
     def move_left(self, content):
@@ -46,13 +48,36 @@ class Figure:
         for i in range(len(per)):
             for j in range(len(per)):
                 if per[i][j] == 1:
-                    if not self.check_element(content, self.h + j, self.w + 1):
+                    if not self.check_element(content, self.h + j - 1, self.w + 1):
                         return
-                    # if self.h + j <= 0:
-                    #     return
         self.h -= 1
 
+    def move_right(self, content):
+        per = self.fclass.get()
+        for i in range(len(per)):
+            for j in range(len(per)):
+                if per[i][j] == 1:
+                    if not self.check_element(content, self.h + 1 + j, self.w + i):
+                        return
+        self.h += 1
 
+    def move_down(self, content):
+        per = self.fclass.get()
+        for i in range(len(per)):
+            for j in range(len(per)):
+                if per[i][j] == 1:
+                    if not self.check_element(content, self.h + j, self.w + 1 + i):
+                        return
+        self.w += 1
+
+    def rotate(self, content):
+        per = self.fclass.get_rotated()
+        for i in range(len(per)):
+            for j in range(len(per)):
+                if per[i][j] == 1:
+                    if not self.check_element(content, self.h + j, self.w + i):
+                        return
+        self.fclass.rotate()
 
 
 class Field:
@@ -75,10 +100,10 @@ class Field:
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 1, 0, 0, 1, 1, 0, 0, 1, 0],
-            [0, 1, 0, 1, 0, 0, 0, 1, 0, 1],
-            [0, 1, 0, 1, 0, 0, 0, 1, 1, 1],
-            [0, 1, 0, 1, 0, 0, 0, 1, 0, 1]
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ]
 
     def draw_field(self, screen):
@@ -117,6 +142,7 @@ class Field:
         running = True
         while running:
             f = Figure(choice(self.figurestypes))
+            f.fclass.current_version = 0
             f.draw()
             pygame.display.flip()
             next_figure = False
@@ -127,13 +153,16 @@ class Field:
                         next_figure = True
                     elif event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_UP:
-                            f.fclass.rotate()
+                            f.rotate(self.content)
                         elif event.key == pygame.K_DOWN:
-                            f.w += 1
+                            f.move_down(self.content)
                         elif event.key == pygame.K_LEFT:
                             f.move_left(self.content)
                         elif event.key == pygame.K_RIGHT:
-                            f.h += 1
+                            f.move_right(self.content)
+                        elif event.key == pygame.K_SPACE:
+                            next_figure = True
+
                 f.draw()
                 pygame.display.flip()
 

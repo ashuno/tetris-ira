@@ -17,6 +17,13 @@ class FigureL:
     def get(self):
         return self.versions[self.current_version]
 
+    def get_rotated(self):
+        a = self.current_version
+        self.rotate()
+        b = self.versions[self.current_version]
+        self.current_version = a
+        return b
+
 
 class FigureJ:
     def __init__(self):
@@ -36,6 +43,13 @@ class FigureJ:
 
     def get(self):
         return self.versions[self.current_version]
+
+    def get_rotated(self):
+        a = self.current_version
+        self.rotate()
+        b = self.versions[self.current_version]
+        self.current_version = a
+        return b
 
 
 class FigureT:
@@ -57,6 +71,13 @@ class FigureT:
     def get(self):
         return self.versions[self.current_version]
 
+    def get_rotated(self):
+        a = self.current_version
+        self.rotate()
+        b = self.versions[self.current_version]
+        self.current_version = a
+        return b
+
 
 class FigureZ:
     def __init__(self):
@@ -76,6 +97,13 @@ class FigureZ:
 
     def get(self):
         return self.versions[self.current_version]
+
+    def get_rotated(self):
+        a = self.current_version
+        self.rotate()
+        b = self.versions[self.current_version]
+        self.current_version = a
+        return b
 
 
 class FigureS:
@@ -97,6 +125,13 @@ class FigureS:
     def get(self):
         return self.versions[self.current_version]
 
+    def get_rotated(self):
+        a = self.current_version
+        self.rotate()
+        b = self.versions[self.current_version]
+        self.current_version = a
+        return b
+
 
 class FigureI:
     def __init__(self):
@@ -117,6 +152,13 @@ class FigureI:
     def get(self):
         return self.versions[self.current_version]
 
+    def get_rotated(self):
+        a = self.current_version
+        self.rotate()
+        b = self.versions[self.current_version]
+        self.current_version = a
+        return b
+
 
 class FigureO:
     def rotate(self):
@@ -127,4 +169,5 @@ class FigureO:
             (1, 1), (1, 1)
         )
 
-
+    def get_rotated(self):
+        return self.get()
