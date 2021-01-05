@@ -33,13 +33,16 @@ class Figure:
                     pygame.draw.rect(screen, pygame.Color(self.color),
                                      (j * elem_size + self.h * elem_size + fieldx, self.w * elem_size + elem_size * i
                                       + fieldy, elem_size, elem_size), 0)
+                    pygame.draw.rect(screen, pygame.Color('black'),
+                                     (j * elem_size + self.h * elem_size + fieldx, self.w * elem_size + elem_size * i
+                                      + fieldy, elem_size, elem_size), 1)
         self.lasth, self.lastw = self.h, self.w
         self.lastfclass = self.fclass.get()
 
     def check_element(self, content, elx, ely):
         if elx < 0 or elx > 9 or ely < 0 or ely > 19:
             return False
-        if content[ely][elx] == 1:
+        if content[ely][elx] != 0:
             return False
         return True
 
@@ -93,7 +96,7 @@ class Figure:
 class Field:
     def __init__(self):
         self.figurestypes = (FigureL(), FigureJ(), FigureT(), FigureZ(), FigureS(), FigureO(), FigureI())
-        self.content = [
+        self.content = list([
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -114,16 +117,15 @@ class Field:
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        ]
+        ])
 
-    def draw_field(self, screen):
+    def draw_window(self, screen):
         color = pygame.Color(60, 60, 60)
         hsv = color.hsva
         color.hsva = (hsv[0], hsv[1], hsv[2] + 40, hsv[3])
         pygame.draw.rect(screen, color, (4, 4, 492, 632), 0)
         pygame.draw.rect(screen, (110, 110, 110), (15, 15, 310, 610), 0)
         pygame.draw.rect(screen, (110, 110, 110), (336, 96, 145, 123), 0)
-        pygame.draw.rect(screen, (0, 0, 0), (fieldx, fieldy, 300, 600), 0)
 
         font = pygame.font.Font(None, 30)
         text = font.render("Next figure", True, (155, 17, 30))
@@ -139,14 +141,38 @@ class Field:
         font = pygame.font.Font(None, 40)
         text = font.render("0", True, 'red')
         screen.blit(text, (403, 310))
+        self.draw_field(screen)
+        pygame.display.flip()
 
+    def draw_field(self, screen):
+        pygame.draw.rect(screen, (0, 0, 0), (fieldx, fieldy, 300, 600), 0)
         for i in range(len(self.content)):
             for j in range(len(self.content[0])):
-                if self.content[i][j] == 1:
-                    pygame.draw.rect(screen, pygame.Color(155, 17, 30),
+                if self.content[i][j] != 0:
+                    pygame.draw.rect(screen, self.content[i][j],
                                      (j * elem_size + fieldx, elem_size * i + fieldy, elem_size, elem_size), 0)
-
+                    pygame.draw.rect(screen, pygame.Color('black'),
+                                     (j * elem_size + fieldx, elem_size * i + fieldy, elem_size, elem_size), 1)
         pygame.display.flip()
+
+    def delete_rows(self):
+        lcontent = []
+        needdraw = False
+        for i in range(len(self.content)):
+            found0 = False
+            for j in self.content[i]:
+                if j == 0:
+                    found0 = True
+                    break
+
+            if found0:
+                lcontent.append(self.content[i])
+            else:
+                needdraw = True
+                lcontent = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] + lcontent
+        self.content = lcontent
+        if needdraw:
+            self.draw_field(screen)
 
     def mainloop(self):
         running = True
@@ -154,6 +180,7 @@ class Field:
         pygame.time.set_timer(MYEVENTTYPE, 600)
         while running:
             f = Figure(choice(self.figurestypes))
+            #f = Figure(FigureL())
             f.fclass.current_version = 0
             if not f.checkSpawn(self.content):
                 # GAME OWER (можно вынести в отдельную функцию)
@@ -186,9 +213,9 @@ class Field:
                         if not f.move_down(self.content):
                             next_figure = True
                             self.store_figure(f)
-
-
                 f.draw()
+
+                self.delete_rows()
                 pygame.display.flip()
 
     def store_figure(self, f):
@@ -196,7 +223,7 @@ class Field:
         for i in range(len(per)):
             for j in range(len(per)):
                 if per[i][j] == 1:
-                    self.content[i + f.w][j + f.h] = 1
+                    self.content[i + f.w][j + f.h] = f.color
         # for i in range(len(self.content)):
         #     print(self.content[i])
 
@@ -205,7 +232,7 @@ if __name__ == '__main__':
     pygame.init()
     pygame.key.set_repeat(270)
     field = Field()
-    field.draw_field(screen)
+    field.draw_window(screen)
     field.mainloop()
     # a = Figure(FigureL())
     # a.draw()
