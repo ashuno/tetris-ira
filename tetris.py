@@ -30,15 +30,16 @@ class Figure:
         for i in range(len(per)):
             for j in range(len(per)):
                 if per[i][j] == 1:
-                    pygame.draw.rect(screen, pygame.Color('red'),
+                    pygame.draw.rect(screen, pygame.Color(self.color),
                                      (j * elem_size + self.h * elem_size + fieldx, self.w * elem_size + elem_size * i
                                       + fieldy, elem_size, elem_size), 0)
+        self.lasth, self.lastw = self.h, self.w
         self.lastfclass = self.fclass.get()
+
 
 class Field:
     def __init__(self):
-        self.figurestypes = (Figure(FigureL()), Figure(FigureJ()), Figure(FigureT()), Figure(FigureZ()),
-                             Figure(FigureS()), Figure(FigureO()))
+        self.figurestypes = (FigureL(), FigureJ(), FigureT(), FigureZ(), FigureS(), FigureO(), FigureI())
 
     def draw_field(self, screen):
         color = pygame.Color(60, 60, 60)
@@ -65,27 +66,37 @@ class Field:
         screen.blit(text, (403, 310))
 
         pygame.display.flip()
-        while pygame.event.wait().type != pygame.QUIT:
-            pass
 
-    # def mainloop(self):
-    #     running = True
-    #     while running:
-    #         for event in pygame.event.get():
-    #             if event.type == pygame.QUIT:
-    #                 running = False
-    #             elif event.type == pygame.KEYDOWN:
-    #                 if event.key == pygame.K_UP:
-    #
-    #                 elif event.key == pygame.K_DOWN:
-    #                     a.h += 1
-    #                     a.draw()
+    def mainloop(self):
+        running = True
+        while running:
+            f = Figure(choice(self.figurestypes))
+            f.draw()
+            pygame.display.flip()
+            next_figure = False
+            while not next_figure:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+                        next_figure = True
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_UP:
+                            f.fclass.rotate()
+                        elif event.key == pygame.K_DOWN:
+                            f.w += 1
+                        elif event.key == pygame.K_LEFT:
+                            f.h -= 1
+                        elif event.key == pygame.K_RIGHT:
+                            f.h += 1
+                f.draw()
+                pygame.display.flip()
 
 
 if __name__ == '__main__':
     pygame.init()
     field = Field()
     field.draw_field(screen)
+    field.mainloop()
     # a = Figure(FigureL())
     # a.draw()
     # a.w = 7
