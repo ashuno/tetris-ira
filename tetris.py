@@ -150,6 +150,8 @@ class Field:
 
     def mainloop(self):
         running = True
+        MYEVENTTYPE = pygame.USEREVENT + 1
+        pygame.time.set_timer(MYEVENTTYPE, 600)
         while running:
             f = Figure(choice(self.figurestypes))
             f.fclass.current_version = 0
@@ -175,7 +177,15 @@ class Field:
                             f.move_left(self.content)
                         elif event.key == pygame.K_RIGHT:
                             f.move_right(self.content)
-                        # elif event.key == pygame.K_SPACE:
+                        elif event.key == pygame.K_SPACE:
+                            while f.move_down(self.content):
+                                pass
+                            next_figure = True
+                            self.store_figure(f)
+                    elif event.type == MYEVENTTYPE:
+                        if not f.move_down(self.content):
+                            next_figure = True
+                            self.store_figure(f)
 
 
                 f.draw()
@@ -193,6 +203,7 @@ class Field:
 
 if __name__ == '__main__':
     pygame.init()
+    pygame.key.set_repeat(270)
     field = Field()
     field.draw_field(screen)
     field.mainloop()
