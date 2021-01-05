@@ -1,5 +1,6 @@
 import pygame
-from figures import FigureL
+from random import *
+from figures import *
 
 elem_size = 30
 fieldx, fieldy = 20, 20
@@ -9,37 +10,13 @@ screen.fill((128, 128, 128))
 pygame.display.set_caption('tetris')
 
 
-def draw_square(screen):
-    color = pygame.Color(60, 60, 60)
-    hsv = color.hsva
-    color.hsva = (hsv[0], hsv[1], hsv[2] + 40, hsv[3])
-    pygame.draw.rect(screen, color, (4, 4, 492, 632), 0)
-    pygame.draw.rect(screen, (110, 110, 110), (15, 15, 310, 610), 0)
-    pygame.draw.rect(screen, (110, 110, 110), (336, 96, 145, 123), 0)
-    pygame.draw.rect(screen, (0, 0, 0), (fieldx, fieldy, 300, 600), 0)
-
-    font = pygame.font.Font(None, 30)
-    text = font.render("Next figure", True, (155, 17, 30))
-    screen.blit(text, (355, 44))
-
-    pygame.draw.rect(screen, (0, 0, 0), (340, 100, 137, 115), 0)
-
-    font = pygame.font.Font(None, 40)
-    text = font.render("Score", True, (155, 17, 30))
-    screen.blit(text, (373, 270))
-    pygame.draw.rect(screen, (205, 205, 205), (340, 250, 140, 110), 3)
-
-    font = pygame.font.Font(None, 40)
-    text = font.render("0", True, 'red')
-    screen.blit(text, (403, 310))
-
-
 class Figure:
     def __init__(self, f_class):
         self.fclass = f_class
         self.h, self.w = 4, 0
         self.lasth, self.lastw = 4, 0
         self.lastfclass = self.fclass.get()
+        self.color = choice(['red', 'blue', 'green', 'yellow'])
 
     def draw(self):
         per = self.lastfclass
@@ -58,36 +35,81 @@ class Figure:
                                       + fieldy, elem_size, elem_size), 0)
         self.lastfclass = self.fclass.get()
 
-    # def redraw(self):
+class Field:
+    def __init__(self):
+        self.figurestypes = (Figure(FigureL()), Figure(FigureJ()), Figure(FigureT()), Figure(FigureZ()),
+                             Figure(FigureS()), Figure(FigureO()))
 
+    def draw_field(self, screen):
+        color = pygame.Color(60, 60, 60)
+        hsv = color.hsva
+        color.hsva = (hsv[0], hsv[1], hsv[2] + 40, hsv[3])
+        pygame.draw.rect(screen, color, (4, 4, 492, 632), 0)
+        pygame.draw.rect(screen, (110, 110, 110), (15, 15, 310, 610), 0)
+        pygame.draw.rect(screen, (110, 110, 110), (336, 96, 145, 123), 0)
+        pygame.draw.rect(screen, (0, 0, 0), (fieldx, fieldy, 300, 600), 0)
+
+        font = pygame.font.Font(None, 30)
+        text = font.render("Next figure", True, (155, 17, 30))
+        screen.blit(text, (355, 44))
+
+        pygame.draw.rect(screen, (0, 0, 0), (340, 100, 137, 115), 0)
+
+        font = pygame.font.Font(None, 40)
+        text = font.render("Score", True, (155, 17, 30))
+        screen.blit(text, (373, 270))
+        pygame.draw.rect(screen, (205, 205, 205), (340, 250, 140, 110), 3)
+
+        font = pygame.font.Font(None, 40)
+        text = font.render("0", True, 'red')
+        screen.blit(text, (403, 310))
+
+        pygame.display.flip()
+        while pygame.event.wait().type != pygame.QUIT:
+            pass
+
+    # def mainloop(self):
+    #     running = True
+    #     while running:
+    #         for event in pygame.event.get():
+    #             if event.type == pygame.QUIT:
+    #                 running = False
+    #             elif event.type == pygame.KEYDOWN:
+    #                 if event.key == pygame.K_UP:
+    #
+    #                 elif event.key == pygame.K_DOWN:
+    #                     a.h += 1
+    #                     a.draw()
 
 
 if __name__ == '__main__':
     pygame.init()
-    draw_square(screen)
-    a = Figure(FigureL())
-    a.draw()
-    a.w = 1
-    a.fclass.rotate()
-    a.draw()
+    field = Field()
+    field.draw_field(screen)
+    # a = Figure(FigureL())
+    # a.draw()
+    # a.w = 7
+    # a.fclass.rotate()
+    # a.draw()
+    # b = Figure(FigureI())
+    # # b.draw()
+    # # b.w = 1
+    # # b.fclass.rotate()
+    # b.draw()
+    # c = Figure(FigureS())
+    # c.draw()
+    # c.h = 1
+    # # c.fclass.rotate()
+    # c.draw()
+    # d = Figure(FigureO())
+    # d.h = 2
+    # d.w = 5
+    # d.draw()
     # fps = 50
     # clock = pygame.time.Clock()
-    # running = True
-    # while running:
-    #     for event in pygame.event.get():
-    #         if event.type == pygame.QUIT:
-    #             running = False
-            # elif event.type == pygame.KEYDOWN:
-            #     if event.key == pygame.K_DOWN:
-            #         Figure.redraw()
-        # # формирование кадра
-        # # ...
-        # pygame.display.flip()  # смена кадра
-        # # изменение игрового мира
-        # # ...
-        # # временная задержка
-        # clock.tick(fps)
-    pygame.display.flip()
-    while pygame.event.wait().type != pygame.QUIT:
-        pass
+
+
+    # pygame.display.flip()
+    # clock.tick(fps)
+
     pygame.quit()
