@@ -24,8 +24,8 @@ class Figure:
             for j in range(len(per)):
                 if per[i][j] == 1:
                     pygame.draw.rect(screen, pygame.Color('black'),
-                                     (j * elem_size + self.lasth * elem_size + fieldx, self.lastw * elem_size + elem_size * i
-                                      + fieldy, elem_size, elem_size), 0)
+                                     (j * elem_size + self.lasth * elem_size + fieldx, self.lastw * elem_size +
+                                      elem_size * i + fieldy, elem_size, elem_size), 0)
         per = self.fclass.get()
         for i in range(len(per)):
             for j in range(len(per)):
@@ -38,9 +38,9 @@ class Figure:
 
     def check_element(self, content, elx, ely):
         if elx < 0 or elx > 9 or ely < 0 or ely > 19:
-            print(elx, ely)
             return False
-
+        if content[ely][elx] == 1:
+            return False
         return True
 
     def move_left(self, content):
@@ -48,7 +48,7 @@ class Figure:
         for i in range(len(per)):
             for j in range(len(per)):
                 if per[i][j] == 1:
-                    if not self.check_element(content, self.h + j - 1, self.w + 1):
+                    if not self.check_element(content, self.h + j - 1, self.w + i):
                         return
         self.h -= 1
 
@@ -162,9 +162,19 @@ class Field:
                             f.move_right(self.content)
                         elif event.key == pygame.K_SPACE:
                             next_figure = True
+                            self.store_figure(f)
 
                 f.draw()
                 pygame.display.flip()
+
+    def store_figure(self, f):
+        per = f.fclass.get()
+        for i in range(len(per)):
+            for j in range(len(per)):
+                if per[i][j] == 1:
+                    self.content[i + f.w][j + f.h] = 1
+        # for i in range(len(self.content)):
+        #     print(self.content[i])
 
 
 if __name__ == '__main__':
