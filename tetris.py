@@ -37,9 +37,34 @@ class Figure:
         self.lastfclass = self.fclass.get()
 
 
+    # def get_fut(self):
+
+
 class Field:
     def __init__(self):
         self.figurestypes = (FigureL(), FigureJ(), FigureT(), FigureZ(), FigureS(), FigureO(), FigureI())
+        self.content = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 0, 0, 1, 1, 0, 0, 1, 0],
+            [0, 1, 0, 1, 0, 0, 0, 1, 0, 1],
+            [0, 1, 0, 1, 0, 0, 0, 1, 1, 1],
+            [0, 1, 0, 1, 0, 0, 0, 1, 0, 1]
+        ]
 
     def draw_field(self, screen):
         color = pygame.Color(60, 60, 60)
@@ -64,6 +89,12 @@ class Field:
         font = pygame.font.Font(None, 40)
         text = font.render("0", True, 'red')
         screen.blit(text, (403, 310))
+
+        for i in range(len(self.content)):
+            for j in range(len(self.content[0])):
+                if self.content[i][j] == 1:
+                    pygame.draw.rect(screen, pygame.Color(155, 17, 30),
+                                     (j * elem_size + fieldx, elem_size * i + fieldy, elem_size, elem_size), 0)
 
         pygame.display.flip()
 
