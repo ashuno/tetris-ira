@@ -67,8 +67,9 @@ class Figure:
             for j in range(len(per)):
                 if per[i][j] == 1:
                     if not self.check_element(content, self.h + j, self.w + 1 + i):
-                        return
+                        return False
         self.w += 1
+        return True
 
     def rotate(self, content):
         per = self.fclass.get_rotated()
@@ -78,6 +79,15 @@ class Figure:
                     if not self.check_element(content, self.h + j, self.w + i):
                         return
         self.fclass.rotate()
+
+    def checkSpawn(self, content):
+        per = self.fclass.get()
+        for i in range(len(per)):
+            for j in range(len(per)):
+                if per[i][j] == 1:
+                    if not self.check_element(content, self.h + j, self.w + i):
+                        return False
+        return True
 
 
 class Field:
@@ -143,6 +153,9 @@ class Field:
         while running:
             f = Figure(choice(self.figurestypes))
             f.fclass.current_version = 0
+            if not f.checkSpawn(self.content):
+                # GAME OWER (можно вынести в отдельную функцию)
+                break
             f.draw()
             pygame.display.flip()
             next_figure = False
@@ -155,14 +168,15 @@ class Field:
                         if event.key == pygame.K_UP:
                             f.rotate(self.content)
                         elif event.key == pygame.K_DOWN:
-                            f.move_down(self.content)
+                            if not f.move_down(self.content):
+                                next_figure = True
+                                self.store_figure(f)
                         elif event.key == pygame.K_LEFT:
                             f.move_left(self.content)
                         elif event.key == pygame.K_RIGHT:
                             f.move_right(self.content)
-                        elif event.key == pygame.K_SPACE:
-                            next_figure = True
-                            self.store_figure(f)
+                        # elif event.key == pygame.K_SPACE:
+
 
                 f.draw()
                 pygame.display.flip()
