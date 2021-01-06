@@ -18,6 +18,20 @@ class Figure:
         self.lastfclass = self.fclass.get()
         self.color = choice(['red', 'blue', 'green', 'yellow'])
 
+    def draw_n_f(self):
+        e_s = 20
+        h = 19
+        w = 6
+        pygame.draw.rect(screen, pygame.Color('black'), (340, 100, 137, 115), 0)
+        per = self.fclass.get()
+        for i in range(len(per)):
+            for j in range(len(per)):
+                if per[i][j] == 1:
+                    pygame.draw.rect(screen, pygame.Color(self.color),
+                                     (j * e_s + h * e_s, w * e_s + e_s * i, e_s, e_s), 0)
+                    pygame.draw.rect(screen, pygame.Color('black'),
+                                     (j * e_s + h * e_s, w * e_s + e_s * i, e_s, e_s), 1)
+
     def draw(self):
         per = self.lastfclass
         for i in range(len(per)):
@@ -96,6 +110,7 @@ class Figure:
 class Field:
     def __init__(self):
         self.figurestypes = (FigureL(), FigureJ(), FigureT(), FigureZ(), FigureS(), FigureO(), FigureI())
+        self.score_counter = 0
         self.content = list([
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -120,10 +135,10 @@ class Field:
         ])
 
     def draw_window(self, screen):
-        color = pygame.Color(60, 60, 60)
-        hsv = color.hsva
-        color.hsva = (hsv[0], hsv[1], hsv[2] + 40, hsv[3])
-        pygame.draw.rect(screen, color, (4, 4, 492, 632), 0)
+        self.color = pygame.Color(60, 60, 60)
+        hsv = self.color.hsva
+        self.color.hsva = (hsv[0], hsv[1], hsv[2] + 40, hsv[3])
+        pygame.draw.rect(screen, self.color, (4, 4, 492, 632), 0)
         pygame.draw.rect(screen, (110, 110, 110), (15, 15, 310, 610), 0)
         pygame.draw.rect(screen, (110, 110, 110), (336, 96, 145, 123), 0)
 
@@ -138,9 +153,10 @@ class Field:
         screen.blit(text, (373, 270))
         pygame.draw.rect(screen, (205, 205, 205), (340, 250, 140, 110), 3)
 
-        font = pygame.font.Font(None, 40)
-        text = font.render("0", True, 'red')
-        screen.blit(text, (403, 310))
+        font1 = pygame.font.Font(None, 40)
+        score = str(self.score_counter)
+        self.score_text = font1.render(score, True, 'red')
+        screen.blit(self.score_text, (403, 310))
         self.draw_field(screen)
         pygame.display.flip()
 
@@ -170,17 +186,33 @@ class Field:
             else:
                 needdraw = True
                 lcontent = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] + lcontent
+                self.score_counter += 100
+                pygame.draw.rect(screen, self.color, (345, 300, 130, 35), 0)
+
+                font1 = pygame.font.Font(None, 40)
+                score = str(self.score_counter)
+                self.score_text = font1.render(score, True, 'red')
+                self.place = self.score_text.get_rect(center=(410, 320))
+                screen.blit(self.score_text, self.place)
+                pygame.display.flip()
         self.content = lcontent
         if needdraw:
             self.draw_field(screen)
+
+
 
     def mainloop(self):
         running = True
         MYEVENTTYPE = pygame.USEREVENT + 1
         pygame.time.set_timer(MYEVENTTYPE, 600)
+        f = Figure(choice(self.figurestypes))
+        new_f = Figure(choice(self.figurestypes))
+        # new_f = Figure(FigureI())
+        # f = Figure(FigureI())
+
+        f.draw()
+        new_f.draw_n_f()
         while running:
-            f = Figure(choice(self.figurestypes))
-            #f = Figure(FigureL())
             f.fclass.current_version = 0
             if not f.checkSpawn(self.content):
                 # GAME OWER (можно вынести в отдельную функцию)
@@ -214,9 +246,15 @@ class Field:
                             next_figure = True
                             self.store_figure(f)
                 f.draw()
-
                 self.delete_rows()
                 pygame.display.flip()
+
+            f = new_f
+            # f = Figure(FigureI())
+
+            new_f = Figure(choice(self.figurestypes))
+            # new_f = Figure(FigureI())
+            new_f.draw_n_f()
 
     def store_figure(self, f):
         per = f.fclass.get()
@@ -224,6 +262,8 @@ class Field:
             for j in range(len(per)):
                 if per[i][j] == 1:
                     self.content[i + f.w][j + f.h] = f.color
+        new_f = Figure(choice(self.figurestypes))
+        new_f.draw_n_f()
         # for i in range(len(self.content)):
         #     print(self.content[i])
 
