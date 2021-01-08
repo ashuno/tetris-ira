@@ -128,6 +128,9 @@ class Field:
     def __init__(self):
         self.figurestypes = (FigureL(), FigureJ(), FigureT(), FigureZ(), FigureS(), FigureO(), FigureI())
         self.score_counter = 0
+        self.make_content()
+
+    def make_content(self):
         self.content = list([
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -170,12 +173,16 @@ class Field:
         screen.blit(text, (373, 270))
         pygame.draw.rect(screen, (205, 205, 205), (340, 250, 140, 110), 3)
 
-        font1 = pygame.font.Font(None, 40)
-        score = str(self.score_counter)
-        self.score_text = font1.render(score, True, 'red')
-        screen.blit(self.score_text, (403, 310))
+        self.print_score()
         self.draw_field(screen)
         pygame.display.flip()
+
+    def print_score(self):
+        font1 = pygame.font.Font(None, 40)
+        score = str(self.score_counter)
+        score_text = font1.render(score, True, 'red')
+        place = score_text.get_rect(center=(410, 320))
+        screen.blit(score_text, place)
 
     def draw_field(self, screen):
         pygame.draw.rect(screen, (0, 0, 0), (fieldx, fieldy, 300, 600), 0)
@@ -206,11 +213,7 @@ class Field:
                 self.score_counter += 100
                 pygame.draw.rect(screen, self.color, (345, 300, 130, 35), 0)
 
-                font1 = pygame.font.Font(None, 40)
-                score = str(self.score_counter)
-                self.score_text = font1.render(score, True, 'red')
-                self.place = self.score_text.get_rect(center=(410, 320))
-                screen.blit(self.score_text, self.place)
+                self.print_score()
                 pygame.display.flip()
         self.content = lcontent
         if needdraw:
@@ -255,11 +258,28 @@ class Field:
                             next_figure = True
                             self.store_figure(f)
                         elif event.key == pygame.K_ESCAPE:
-                            start_screen()
-                            running = False
-                            field = Field()
-                            field.draw_window(screen)
-                            field.mainloop()
+                            print(0)
+                            pygame.time.set_timer(MYEVENTTYPE, 0)
+
+                            if pause():
+                                print(2)
+                                pygame.display.flip()
+                                field.draw_window(screen)
+                                new_f.draw_n_f()
+                                pygame.time.set_timer(MYEVENTTYPE, 600)
+
+                            else:
+                                n_f = Field()
+                                n_f.draw_field(screen)
+                                self.make_content()
+                                n_f.draw_window(screen)
+                                f = Figure(choice(self.figurestypes))
+                                new_f = Figure(choice(self.figurestypes))
+                                f.draw()
+                                new_f.draw_n_f()
+                                pygame.time.set_timer(MYEVENTTYPE, 600)
+                                self.score_counter = 0
+
                     elif event.type == MYEVENTTYPE:
                         if not f.move_down(self.content):
                             next_figure = True
@@ -269,7 +289,6 @@ class Field:
                 pygame.display.flip()
 
             f = new_f
-
             new_f = Figure(choice(self.figurestypes))
             new_f.draw_n_f()
 
@@ -303,7 +322,51 @@ def start_screen():
                     event.type == pygame.MOUSEBUTTONDOWN:
                 return
         pygame.display.flip()
-        clock.tick(FPS)
+
+
+def pause():
+    color = 160, 160, 160
+    pygame.draw.rect(screen, color, (4, 4, 492, 632), 0)
+
+    font1 = pygame.font.Font(None, 80)
+    font = pygame.font.Font(None, 40)
+
+    text1 = font1.render('PAUSED', True, (155, 17, 30))
+    place1 = text1.get_rect(center=(250, 80))
+    screen.blit(text1, place1)
+    text2 = font.render('Continue', True, (80, 90, 255))
+    place2 = text2.get_rect(center=(250, 240))
+    screen.blit(text2, place2)
+    text3 = font.render('Retry', True, (80, 90, 255))
+    place3 = text3.get_rect(center=(250, 330))
+    screen.blit(text3, place3)
+    text4 = font.render('Quit', True, (80, 90, 255))
+    place4 = text4.get_rect(center=(250, 420))
+    screen.blit(text4, place4)
+    pygame.display.flip()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONUP:
+                if (pygame.mouse.get_pos()[0] >= 150) and (pygame.mouse.get_pos()[1] >= 230)\
+                        and (pygame.mouse.get_pos()[0] <= 320) and (pygame.mouse.get_pos()[1] <= 250):
+                    return True
+                elif (pygame.mouse.get_pos()[0] >= 150) and (pygame.mouse.get_pos()[1] >= 310)\
+                        and (pygame.mouse.get_pos()[0] <= 320) and (pygame.mouse.get_pos()[1] <= 340):
+                    return False
+                elif (pygame.mouse.get_pos()[0] >= 150) and (pygame.mouse.get_pos()[1] >= 410)\
+                        and (pygame.mouse.get_pos()[0] <= 320) and (pygame.mouse.get_pos()[1] <= 430):
+                    pygame.quit()
+                    quit()
+
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.display.flip()
+                    return True
+                elif event.key == pygame.K_RETURN:
+                    return True
 
 
 def play_again(score_counter):
@@ -346,7 +409,6 @@ def play_again(score_counter):
                     return False
                 elif event.key == pygame.K_RETURN:
                     return True
-        clock.tick(FPS)
 
 
 if __name__ == '__main__':
