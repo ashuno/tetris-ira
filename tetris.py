@@ -180,7 +180,7 @@ class Field:
     def print_score(self):
         font1 = pygame.font.Font(None, 40)
         score = str(self.score_counter)
-        score_text = font1.render(score, True, 'red')
+        score_text = font1.render(score, True, pygame.Color('red'))
         place = score_text.get_rect(center=(410, 320))
         screen.blit(score_text, place)
 
@@ -325,23 +325,27 @@ def start_screen():
 
 
 def pause():
-    color = 160, 160, 160
-    pygame.draw.rect(screen, color, (4, 4, 492, 632), 0)
+    fon = pygame.transform.scale(load_image('pause.png'), (492, 631))
+    screen.blit(fon, (4, 5))
 
     font1 = pygame.font.Font(None, 80)
     font = pygame.font.Font(None, 40)
 
+    text1 = font1.render('PAUSED', True, pygame.Color('black'), 0)
+    place1 = text1.get_rect(center=(250, 80))
+    screen.blit(text1, place1)
     text1 = font1.render('PAUSED', True, (155, 17, 30))
     place1 = text1.get_rect(center=(250, 80))
     screen.blit(text1, place1)
+
     text2 = font.render('Continue', True, (80, 90, 255))
-    place2 = text2.get_rect(center=(250, 240))
+    place2 = text2.get_rect(center=(250, 215))
     screen.blit(text2, place2)
     text3 = font.render('Retry', True, (80, 90, 255))
-    place3 = text3.get_rect(center=(250, 330))
+    place3 = text3.get_rect(center=(250, 315))
     screen.blit(text3, place3)
     text4 = font.render('Quit', True, (80, 90, 255))
-    place4 = text4.get_rect(center=(250, 420))
+    place4 = text4.get_rect(center=(250, 413))
     screen.blit(text4, place4)
     pygame.display.flip()
     while True:
@@ -350,13 +354,13 @@ def pause():
                 pygame.quit()
                 quit()
             elif event.type == pygame.MOUSEBUTTONUP:
-                if (pygame.mouse.get_pos()[0] >= 150) and (pygame.mouse.get_pos()[1] >= 230)\
-                        and (pygame.mouse.get_pos()[0] <= 320) and (pygame.mouse.get_pos()[1] <= 250):
+                if (pygame.mouse.get_pos()[0] >= 150) and (pygame.mouse.get_pos()[1] >= 200)\
+                        and (pygame.mouse.get_pos()[0] <= 320) and (pygame.mouse.get_pos()[1] <= 230):
                     return True
-                elif (pygame.mouse.get_pos()[0] >= 150) and (pygame.mouse.get_pos()[1] >= 310)\
-                        and (pygame.mouse.get_pos()[0] <= 320) and (pygame.mouse.get_pos()[1] <= 340):
+                elif (pygame.mouse.get_pos()[0] >= 150) and (pygame.mouse.get_pos()[1] >= 300)\
+                        and (pygame.mouse.get_pos()[0] <= 320) and (pygame.mouse.get_pos()[1] <= 330):
                     return False
-                elif (pygame.mouse.get_pos()[0] >= 150) and (pygame.mouse.get_pos()[1] >= 410)\
+                elif (pygame.mouse.get_pos()[0] >= 150) and (pygame.mouse.get_pos()[1] >= 400)\
                         and (pygame.mouse.get_pos()[0] <= 320) and (pygame.mouse.get_pos()[1] <= 430):
                     pygame.quit()
                     quit()
@@ -397,11 +401,11 @@ def play_again(score_counter):
                 pygame.quit()
                 quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if (pygame.mouse.get_pos()[0] >= 80) and (pygame.mouse.get_pos()[1] >= 490)\
-                        and (pygame.mouse.get_pos()[0] <= 160) and (pygame.mouse.get_pos()[1] <= 540):
+                if (pygame.mouse.get_pos()[0] >= 80) and (pygame.mouse.get_pos()[1] >= 480)\
+                        and (pygame.mouse.get_pos()[0] <= 160) and (pygame.mouse.get_pos()[1] <= 520):
                     return True
-                elif (pygame.mouse.get_pos()[0] >= 300) and (pygame.mouse.get_pos()[1] >= 490)\
-                        and (pygame.mouse.get_pos()[0] <= 380) and (pygame.mouse.get_pos()[1] <= 540):
+                elif (pygame.mouse.get_pos()[0] >= 310) and (pygame.mouse.get_pos()[1] >= 480)\
+                        and (pygame.mouse.get_pos()[0] <= 350) and (pygame.mouse.get_pos()[1] <= 520):
                     return False
 
             elif event.type == pygame.KEYDOWN:
