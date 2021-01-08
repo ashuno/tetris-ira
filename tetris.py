@@ -8,6 +8,23 @@ size = width, height = 500, 640
 screen = pygame.display.set_mode(size)
 screen.fill((128, 128, 128))
 pygame.display.set_caption('tetris')
+clock = pygame.time.Clock()
+FPS = 50
+
+
+def load_image(name, color_key=None):
+    fullname = name
+    try:
+        image = pygame.image.load(fullname)
+    except pygame.error as message:
+        print('Не удаётся загрузить:', name)
+        raise SystemExit(message)
+    image = image.convert_alpha()
+    if color_key is not None:
+        if color_key == -1:
+            color_key = image.get_at((0, 0))
+        image.set_colorkey(color_key)
+    return image
 
 
 class Figure:
@@ -199,23 +216,18 @@ class Field:
         if needdraw:
             self.draw_field(screen)
 
-
-
     def mainloop(self):
         running = True
         MYEVENTTYPE = pygame.USEREVENT + 1
         pygame.time.set_timer(MYEVENTTYPE, 600)
         f = Figure(choice(self.figurestypes))
         new_f = Figure(choice(self.figurestypes))
-        # new_f = Figure(FigureI())
-        # f = Figure(FigureI())
 
         f.draw()
         new_f.draw_n_f()
         while running:
             f.fclass.current_version = 0
             if not f.checkSpawn(self.content):
-                # GAME OWER (можно вынести в отдельную функцию)
                 break
             f.draw()
             pygame.display.flip()
@@ -223,8 +235,9 @@ class Field:
             while not next_figure:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        running = False
-                        next_figure = True
+                        pygame.quit()
+                        quit()
+
                     elif event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_UP:
                             f.rotate(self.content)
@@ -241,6 +254,12 @@ class Field:
                                 pass
                             next_figure = True
                             self.store_figure(f)
+                        elif event.key == pygame.K_ESCAPE:
+                            start_screen()
+                            running = False
+                            field = Field()
+                            field.draw_window(screen)
+                            field.mainloop()
                     elif event.type == MYEVENTTYPE:
                         if not f.move_down(self.content):
                             next_figure = True
@@ -250,10 +269,8 @@ class Field:
                 pygame.display.flip()
 
             f = new_f
-            # f = Figure(FigureI())
 
             new_f = Figure(choice(self.figurestypes))
-            # new_f = Figure(FigureI())
             new_f.draw_n_f()
 
     def store_figure(self, f):
@@ -264,40 +281,83 @@ class Field:
                     self.content[i + f.w][j + f.h] = f.color
         new_f = Figure(choice(self.figurestypes))
         new_f.draw_n_f()
-        # for i in range(len(self.content)):
-        #     print(self.content[i])
+
+
+def start_screen():
+    fon = pygame.transform.scale(load_image('fon.png'), (492, 631))
+    screen.blit(fon, (4, 5))
+    font = pygame.font.Font(None, 70)
+    text = font.render("TETRIS", True, (155, 17, 30))
+    screen.blit(text, (160, 64))
+
+    font = pygame.font.Font(None, 35)
+    text = font.render("> press any key to start <", True, (155, 17, 30))
+    screen.blit(text, (110, 544))
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.KEYDOWN or \
+                    event.type == pygame.MOUSEBUTTONDOWN:
+                return
+        pygame.display.flip()
+        clock.tick(FPS)
+
+
+def play_again(score_counter):
+    intro_text = "Would you like to play again?"
+    sc_c = 'Final score: ' + str(score_counter)
+    fon = pygame.transform.scale(load_image('final_fon.png'), (492, 631))
+    screen.blit(fon, (4, 5))
+
+    font = pygame.font.Font(None, 30)
+    text = font.render(sc_c, True, (175, 17, 30))
+    screen.blit(text, (180, 384))
+
+    font = pygame.font.Font(None, 40)
+    text = font.render(intro_text, True, (80, 90, 255))
+    screen.blit(text, (60, 460))
+
+    font = pygame.font.Font(None, 60)
+    text = font.render('yes', True, (155, 0, 0))
+    screen.blit(text, (110, 500))
+    font = pygame.font.Font(None, 60)
+    text = font.render('no', True, (0, 155, 0))
+    screen.blit(text, (330, 500))
+
+    pygame.display.flip()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if (pygame.mouse.get_pos()[0] >= 80) and (pygame.mouse.get_pos()[1] >= 490)\
+                        and (pygame.mouse.get_pos()[0] <= 160) and (pygame.mouse.get_pos()[1] <= 540):
+                    return True
+                elif (pygame.mouse.get_pos()[0] >= 300) and (pygame.mouse.get_pos()[1] >= 490)\
+                        and (pygame.mouse.get_pos()[0] <= 380) and (pygame.mouse.get_pos()[1] <= 540):
+                    return False
+
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return False
+                elif event.key == pygame.K_RETURN:
+                    return True
+        clock.tick(FPS)
 
 
 if __name__ == '__main__':
     pygame.init()
     pygame.key.set_repeat(270)
-    field = Field()
-    field.draw_window(screen)
-    field.mainloop()
-    # a = Figure(FigureL())
-    # a.draw()
-    # a.w = 7
-    # a.fclass.rotate()
-    # a.draw()
-    # b = Figure(FigureI())
-    # # b.draw()
-    # # b.w = 1
-    # # b.fclass.rotate()
-    # b.draw()
-    # c = Figure(FigureS())
-    # c.draw()
-    # c.h = 1
-    # # c.fclass.rotate()
-    # c.draw()
-    # d = Figure(FigureO())
-    # d.h = 2
-    # d.w = 5
-    # d.draw()
-    # fps = 50
-    # clock = pygame.time.Clock()
-
-
-    # pygame.display.flip()
-    # clock.tick(fps)
-
+    checker = True
+    while checker:
+        start_screen()
+        field = Field()
+        field.draw_window(screen)
+        field.mainloop()
+        if not play_again(field.score_counter):
+            break
     pygame.quit()
