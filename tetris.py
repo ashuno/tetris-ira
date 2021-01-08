@@ -220,15 +220,17 @@ class Field:
             self.draw_field(screen)
 
     def mainloop(self):
+        counter = 3
         running = True
         MYEVENTTYPE = pygame.USEREVENT + 1
-        pygame.time.set_timer(MYEVENTTYPE, 600)
+        time = 600
         f = Figure(choice(self.figurestypes))
         new_f = Figure(choice(self.figurestypes))
 
         f.draw()
         new_f.draw_n_f()
         while running:
+            pygame.time.set_timer(MYEVENTTYPE, time)
             f.fclass.current_version = 0
             if not f.checkSpawn(self.content):
                 break
@@ -266,7 +268,7 @@ class Field:
                                 pygame.display.flip()
                                 field.draw_window(screen)
                                 new_f.draw_n_f()
-                                pygame.time.set_timer(MYEVENTTYPE, 600)
+                                pygame.time.set_timer(MYEVENTTYPE, time)
 
                             else:
                                 n_f = Field()
@@ -277,7 +279,7 @@ class Field:
                                 new_f = Figure(choice(self.figurestypes))
                                 f.draw()
                                 new_f.draw_n_f()
-                                pygame.time.set_timer(MYEVENTTYPE, 600)
+                                pygame.time.set_timer(MYEVENTTYPE, time)
                                 self.score_counter = 0
 
                     elif event.type == MYEVENTTYPE:
@@ -291,6 +293,12 @@ class Field:
             f = new_f
             new_f = Figure(choice(self.figurestypes))
             new_f.draw_n_f()
+            counter -= 1
+            if counter == 0:
+                time -= 5
+                counter = 3
+            # print(time)
+            # print(counter)
 
     def store_figure(self, f):
         per = f.fclass.get()
@@ -401,11 +409,11 @@ def play_again(score_counter):
                 pygame.quit()
                 quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if (pygame.mouse.get_pos()[0] >= 80) and (pygame.mouse.get_pos()[1] >= 480)\
-                        and (pygame.mouse.get_pos()[0] <= 160) and (pygame.mouse.get_pos()[1] <= 520):
+                if (pygame.mouse.get_pos()[0] >= 100) and (pygame.mouse.get_pos()[1] >= 500)\
+                        and (pygame.mouse.get_pos()[0] <= 190) and (pygame.mouse.get_pos()[1] <= 550):
                     return True
-                elif (pygame.mouse.get_pos()[0] >= 310) and (pygame.mouse.get_pos()[1] >= 480)\
-                        and (pygame.mouse.get_pos()[0] <= 350) and (pygame.mouse.get_pos()[1] <= 520):
+                elif (pygame.mouse.get_pos()[0] >= 320) and (pygame.mouse.get_pos()[1] >= 500)\
+                        and (pygame.mouse.get_pos()[0] <= 390) and (pygame.mouse.get_pos()[1] <= 550):
                     return False
 
             elif event.type == pygame.KEYDOWN:
@@ -417,7 +425,7 @@ def play_again(score_counter):
 
 if __name__ == '__main__':
     pygame.init()
-    pygame.key.set_repeat(270)
+    pygame.key.set_repeat(300)
     checker = True
     while checker:
         start_screen()
