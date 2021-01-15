@@ -260,11 +260,9 @@ class Field:
                             next_figure = True
                             self.store_figure(f)
                         elif event.key == pygame.K_ESCAPE:
-                            print(0)
                             pygame.time.set_timer(MYEVENTTYPE, 0)
 
                             if pause():
-                                print(2)
                                 pygame.display.flip()
                                 field.draw_window(screen)
                                 new_f.draw_n_f()
@@ -297,8 +295,6 @@ class Field:
             if counter == 0:
                 time -= 5
                 counter = 3
-            # print(time)
-            # print(counter)
 
     def store_figure(self, f):
         per = f.fclass.get()
